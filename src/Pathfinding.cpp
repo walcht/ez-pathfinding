@@ -21,17 +21,16 @@ int main(int argc, char const* argv[]) {
   MainGrid.SetStartCase(GridCase(0, 0, false));
   MainGrid.SetEndCase(GridCase(39, 39, false));
 
-
+  /*
   std::stack< GridCaseNode* > DFS_stack;
   GeneralTree tree = GeneralTree();
   SA::DFS_iterative_elementary_init(MainGrid, tree, DFS_stack);
+  */
 
 
-  /*
   std::queue< GridCaseNode* > BFS_queue;
   GeneralTree tree = GeneralTree();
   SA::BFS_iterative_elementary_init(MainGrid, tree, BFS_queue);
-  */
 
   bool endInputLoop = false;
   bool isMouseDown = false;
@@ -99,27 +98,27 @@ int main(int argc, char const* argv[]) {
     // draw everything here
     MainGrid.RenderGrid();
 
-
+    /*
     if (SA::DFS_iterative_elementary_verify(MainGrid, tree, DFS_stack))
     {
       SA::DFS_iterative_elementary(MainGrid, tree, DFS_stack);
       SA::Draw_path(MainGrid, DFS_stack.top());
     }
+    */
 
-    /*
     if (SA::BFS_iterative_elementary_verify(MainGrid, tree, BFS_queue))
     {
       SA::BFS_iterative_elementary(MainGrid, tree, BFS_queue);
       SA::Draw_path(MainGrid, BFS_queue.front());
     }
-    */
+
 
     // draw start\end cases
     MainGrid.DrawStartCase();
     MainGrid.DrawEndCase();
 
     MainRenderer.UpdateScreen();
-    SDL_Delay(200);
+    //SDL_Delay(20);
   }
 
   return 0;
