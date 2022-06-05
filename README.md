@@ -1,5 +1,6 @@
 # fancy-pathfinder
 Visualize, bechmark and play with different pathfinding algorithms in a highly customizable grid layout.
+![GAMEPLAY_GIF][gameplay_gif]
 
 ## About
 This project aims to provide a _fancy_ graphical visualization for pathfinding algorithms while providing highly customizable case layout.
@@ -49,7 +50,7 @@ This is helpful to graphically show the step-by-step progress of the algorithm.
 Any contribution are more than welcome! Add an issue or open a pull request 🙂.
 
 ## License
-MIT. See [LICENSE]() for details.
+MIT. See [LICENSE](https://github.com/walcht/fancy-pathfinder/blob/master/LICENSE.txt) for details.
 
 [navigation_constraints]: images/navigation_constraints.png
 [gameplay_gif]: gifs/gameplay_gif.gif
