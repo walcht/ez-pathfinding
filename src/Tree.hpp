@@ -60,15 +60,14 @@ public:
   // GETTERS
   /////////////////////////////////////////////////////////////////////////////////////
 
-  const int GetDepth() const;                          // returns tree depth
-
+  const int GetDepth() const;                           // returns tree depth
 
 
 private:
 
 
-  void deleteTreeRecursive(GridCaseNode* node);       // delete the whole tree whose root is node
-  void updateDepth(int depth);                        // update tree depth
+  void deleteTreeRecursive(GridCaseNode* node);           // delete the whole tree whose root is node
+  void updateDepth(int depth);                            // update tree depth
 
 };
 

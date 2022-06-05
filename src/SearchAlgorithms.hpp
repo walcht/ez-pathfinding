@@ -14,25 +14,33 @@ namespace SA {
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // DEPTH FIRST SEARCH ALGORITHMS: DFS, DLS
+  // DEPTH FIRST SEARCH ALGORITHMS: DFS, DLS, HILL CLIMBING
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   void DFS_iterative(const Grid& grid);                               // vanilla search algorithm: usefull for a more accurate estimation
-                                                                      // of the algorithms performance.
+                                                                      // of the algorithm's performance.
 
-  void DFS_iterative_dirty( Grid&       grid,                   // dirty search algorithm: estimation of algorithms performance
-                            Renderer&   renderer,               // using this function is NOT accurate due to calls to graphics
-                            int               delayTime               // API, Timers, etc...
-                          );
 
   void DFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack);
+  bool DFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack);
+  void DFS_iterative_elementary_init(Grid& grid, GeneralTree& tree,  std::stack< GridCaseNode* >& DFS_stack);
+
+
+  void HC_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue);
+  bool HC_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue);
+  void HC_iterative_elementary(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue, int (*heuristic)(Vector2D&));
+
   //void DLS_iterative(const Grid& grid, int depth_limit);
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // BREADTH-FIRST SEARCH ALGORITHMS: BFS
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  void BFS_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
+  bool BFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
+  void BFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // A* ALGORITHMS
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 } /* SA */
@@ -63,18 +71,10 @@ void SA::DFS_iterative(const Grid& grid)
     {
       current_node->isDiscovered = true;
 
-      //it is waaaay much better to change this whole section a For each loop
-      if (grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y))
+      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1))
       {
-
-        current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
-        DFS_stack.push(current_node->case_up_node);
-      }
-
-      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1))
-      {
-        current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
-        DFS_stack.push(current_node->case_left_node);
+        current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
+        DFS_stack.push(current_node->case_right_node);
       }
 
       if (grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y))
@@ -83,88 +83,23 @@ void SA::DFS_iterative(const Grid& grid)
         DFS_stack.push(current_node->case_down_node);
       }
 
-      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1))
-      {
-        current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
-        DFS_stack.push(current_node->case_right_node);
-      }
-      printf("how many times?\n");
-    }
-
-  }
-
-} /* DFS_iterati */
-
-
-
-
-
-
-void SA::DFS_iterative_dirty(Grid& grid, Renderer& renderer, int delayStepTime)
-{
-  std::stack< GridCaseNode* > DFS_stack;
-
-  GeneralTree tree = GeneralTree();     // usefull for determining discovered cases (discovered = a case that the algorithm walked through before)
-                                        // according to the chosen data structure, there is a trade-off between space and time complexity
-
-  GridCaseNode* current_node = tree.CreateNewNode(grid.GetStartCase().position, NULL);
-
-  DFS_stack.push(current_node);
-
-  while (!DFS_stack.empty())
-  {
-    current_node = DFS_stack.top();
-    DFS_stack.pop();
-    if (current_node->position == grid.GetEndCase().position)             // we have reached the first path to the objective!
-    {                                                                     // not necessarilly the shortest
-      printf("YO WE GOT THIS!");
-      return;
-    }
-
-    if (!current_node->isDiscovered)
-    {
-      current_node->isDiscovered = true;
-
-      //it is waaaay much better to change this whole section a For each loop
-      if (grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y))
-      {
-
-        current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
-        DFS_stack.push(current_node->case_up_node);
-      }
-
       if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1))
       {
         current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
         DFS_stack.push(current_node->case_left_node);
       }
 
-      if (grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y))
+      if (grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y))
       {
-        current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
-        DFS_stack.push(current_node->case_down_node);
+        current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
+        DFS_stack.push(current_node->case_up_node);
       }
-
-      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1))
-      {
-        current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
-        DFS_stack.push(current_node->case_right_node);
-      }
-
-      renderer.Clear(0x00, 0x00, 0x00);
-
-      // draw everything here
-      grid.RenderGrid();
-
-      Draw_path(grid, current_node);
-      SDL_Delay(delayStepTime);
-
-      renderer.UpdateScreen();
-
     }
+
   }
 
 } /* DFS_iterati */
+
 
 
 
@@ -175,41 +110,49 @@ void SA::DFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::stack< Gri
     GridCaseNode* current_node = DFS_stack.top();
     DFS_stack.pop();
 
-    if (current_node->position == grid.GetEndCase().position) return;     // we have reached the first path to the objective!
-                                                                          // not necessarilly the shortest
+    grid(current_node->position).isDeveloped = true;
 
-    if (!current_node->isDiscovered)
+    if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1)
+          && !grid(current_node->position.x, current_node->position.y + 1).isDeveloped  )
     {
-      current_node->isDiscovered = true;
-
-      //it is waaaay much better to change this whole section a For each loop
-      if (grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y))
-      {
-
-        current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
-        DFS_stack.push(current_node->case_up_node);
-      }
-
-      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1))
-      {
-        current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
-        DFS_stack.push(current_node->case_left_node);
-      }
-
-      if (grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y))
-      {
-        current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
-        DFS_stack.push(current_node->case_down_node);
-      }
-
-      if (grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1))
-      {
-        current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
-        DFS_stack.push(current_node->case_right_node);
-      }
-
+      current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
+      DFS_stack.push(current_node->case_right_node);
     }
 
+    if (  grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y)
+          && !grid(current_node->position.x + 1, current_node->position.y).isDeveloped  )
+    {
+      current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
+      DFS_stack.push(current_node->case_down_node);
+    }
+
+    if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1)
+          && !grid(current_node->position.x, current_node->position.y - 1).isDeveloped  )
+    {
+      current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
+      DFS_stack.push(current_node->case_left_node);
+    }
+
+    if (  grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y)
+          && !grid(current_node->position.x - 1, current_node->position.y).isDeveloped  )
+    {
+      current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
+      DFS_stack.push(current_node->case_up_node);
+    }
+
+
+}
+
+bool SA::DFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack)
+{
+  if (DFS_stack.empty()) return false;
+  if (DFS_stack.top()->position == grid.GetEndCase().position) return false;
+  return true;
+}
+
+void SA::DFS_iterative_elementary_init(Grid& grid, GeneralTree& tree,  std::stack< GridCaseNode* >& DFS_stack)
+{
+  DFS_stack.push(tree.CreateNewNode(grid.GetStartCase().position, NULL));
 }
 
 
@@ -220,7 +163,7 @@ void SA::Draw_path(Grid& grid, GridCaseNode* node)
 {
   while(node != NULL)
   {
-    grid.RenderGridCase(node->position.x, node->position.y, 0, 255, 0, 0xFF);
+    grid.RenderGridCase(node->position.x, node->position.y, 0, 0, 0xFF, 0xFF);
     node = node->came_from;
   }
 }
@@ -258,6 +201,93 @@ void SA::Draw_path(Grid& grid, GridCaseNode* node)
 //    }
 //  }
 //}
+
+void SA::BFS_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
+{
+  BFS_queue.push(tree.CreateNewNode(grid.GetStartCase().position, NULL));
+}
+
+bool SA::BFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
+{
+  if (BFS_queue.empty()) return false;
+  if (BFS_queue.front()->position == grid.GetEndCase().position) return false;
+  return true;
+}
+
+void SA::BFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
+{
+  GridCaseNode* current_node = BFS_queue.front();
+  BFS_queue.pop();
+
+  grid(current_node->position).isDeveloped = true;
+
+  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1)
+        && !grid(current_node->position.x, current_node->position.y + 1).isDeveloped  )
+  {
+    current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
+    BFS_queue.push(current_node->case_right_node);
+  }
+
+  if (  grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y)
+        && !grid(current_node->position.x + 1, current_node->position.y).isDeveloped  )
+  {
+    current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
+    BFS_queue.push(current_node->case_down_node);
+  }
+
+  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1)
+        && !grid(current_node->position.x, current_node->position.y - 1).isDeveloped  )
+  {
+    current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
+    BFS_queue.push(current_node->case_left_node);
+  }
+
+  if (  grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y)
+        && !grid(current_node->position.x - 1, current_node->position.y).isDeveloped  )
+  {
+    current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
+    BFS_queue.push(current_node->case_up_node);
+  }
+
+}
+
+
+//void SA::HC_iterative_elementary(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue, int (*heuristic)(Vector2D&))
+//{
+//  GridCaseNode* current_node = HC_queue.front();
+//  HC_queue.pop();
+//
+//  grid(current_node->position).isDeveloped = true;
+//
+//  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1)
+//        && !grid(current_node->position.x, current_node->position.y + 1).isDeveloped  )
+//  {
+//    current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
+//    HC_queue.push(current_node->case_right_node);
+//  }
+//
+//  if (  grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y)
+//        && !grid(current_node->position.x + 1, current_node->position.y).isDeveloped  )
+//  {
+//    current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
+//    HC_queue.push(current_node->case_down_node);
+//  }
+//
+//  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1)
+//        && !grid(current_node->position.x, current_node->position.y - 1).isDeveloped  )
+//  {
+//    current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
+//    HC_queue.push(current_node->case_left_node);
+//  }
+//
+//  if (  grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y)
+//        && !grid(current_node->position.x - 1, current_node->position.y).isDeveloped  )
+//  {
+//    current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
+//    HC_queue.push(current_node->case_up_node);
+//  }
+//}
+
 
 // A* Algorithm with custom heuristic function
 // A* is similar to Djikstra algorithm when heuristic function is set to return 0

@@ -15,10 +15,10 @@ COMPILER_FLAGS = -g
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 #This is the target that compiles our excecutable
-App : App.o Renderer.o Grid.o Tree.o
+pathfinder : Pathfinding.o Renderer.o Grid.o Tree.o
 	$(CC) $(COMPILER_FLAGS) -o $@ $^ $(LINKER_FLAGS)
 
-App.o: $(SOURCE_DIR)App.cpp $(SOURCE_DIR)Renderer.hpp $(SOURCE_DIR)Grid.hpp
+Pathfinding.o: $(SOURCE_DIR)Pathfinding.cpp $(SOURCE_DIR)Renderer.hpp $(SOURCE_DIR)Grid.hpp
 	$(CC) $(COMPILER_FLAGS) -c $<
 
 Renderer.o: $(SOURCE_DIR)Renderer.cpp $(SOURCE_DIR)Renderer.hpp
@@ -33,4 +33,4 @@ Tree.o: $(SOURCE_DIR)Tree.cpp $(SOURCE_DIR)Tree.hpp $(SOURCE_DIR)Common.hpp
 .PHONY = clean
 
 clean :
-	rm -f *.o
+	rm -f pathfinder *.o

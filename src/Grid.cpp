@@ -59,6 +59,13 @@ GridCase& Grid::operator() (int x, int y) {
   return _grid[x][y];
 }
 
+GridCase& Grid::operator() (Vector2D& pos)
+{
+  assert(((pos.x < _width) && (pos.y < _height)));
+  return _grid[pos.x][pos.y];
+}
+
+
 const GridCase& Grid::operator() (int x, int y) const {
   assert(((x < _width) && (y < _height)));
   return _grid[x][y];
@@ -67,6 +74,12 @@ const GridCase& Grid::operator() (int x, int y) const {
 Renderer& Grid::GetAttachedRenderer()
 {
   return _renderer;
+}
+
+void Grid::GetMouseGrid(Vector2D& pos, int x, int y)
+{
+  pos.x = x / (_case_size + _line_width);
+  pos.y = y / (_case_size + _line_width);
 }
 
 void Grid::RenderGridCase(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -105,6 +118,8 @@ void Grid::SetEndCase(GridCase endCase)
   _endCase = endCase;
 }
 
+void Grid::SetWallCase(int x, int y) {_grid[x][y].isWall = true;}
+void Grid::SetWallCase(Vector2D pPosition) {_grid[pPosition.x][pPosition.y].isWall = true;}
 
 void Grid::DrawStartCase()
 {
