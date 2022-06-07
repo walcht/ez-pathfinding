@@ -121,6 +121,9 @@ void Grid::SetEndCase(GridCase endCase)
 void Grid::SetWallCase(int x, int y) {_grid[x][y].isWall = true;}
 void Grid::SetWallCase(Vector2D pPosition) {_grid[pPosition.x][pPosition.y].isWall = true;}
 
+void Grid::ClearCase(int x, int y) {_grid[x][y].isWall = false;}
+void Grid::ClearCase(Vector2D pPosition) {_grid[pPosition.x][pPosition.y].isWall = false;}
+
 void Grid::DrawStartCase()
 {
   RenderGridCase(_startCase.position.x, _startCase.position.y, 0, 255, 0, 0xFF);

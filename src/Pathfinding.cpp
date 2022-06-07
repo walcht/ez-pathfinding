@@ -5,7 +5,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-
 int main(int argc, char const* argv[]) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,29 +31,45 @@ int main(int argc, char const* argv[]) {
   GeneralTree tree = GeneralTree();
   SA::BFS_iterative_elementary_init(MainGrid, tree, BFS_queue);
 
-  bool endInputLoop = false;
-  bool isMouseDown = false;
+  bool endCustomizationLoop = false;
+  bool isLeftMouseButtonDown = false;
+  bool isRightMouseButtonDown = false;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // INPUT LOOP
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  while (!quit && !endInputLoop)
+  while (!quit && !endCustomizationLoop)
   {
     while (SDL_PollEvent(&e) != 0)    // handles user input
     {
       if (e.type == SDL_QUIT) quit = true;
 
       //User presses a key
-      else if ( e.type == SDL_KEYDOWN )
+      if ( e.type == SDL_KEYDOWN )
       {
         switch (e.key.keysym.sym) {
-          case SDLK_SPACE: endInputLoop = true;
+          case SDLK_EXECUTE:
+          case SDLK_SPACE:
+            endCustomizationLoop = true;
+            break;
         }
       }
 
-      else if (e.type == SDL_MOUSEBUTTONDOWN)
-      {
-        isMouseDown = true;
+      if (e.type == SDL_MOUSEBUTTONDOWN)
+        if (e.button.button == SDL_BUTTON_LEFT)
+          isLeftMouseButtonDown = true;
+        else if (e.button.button == SDL_BUTTON_RIGHT)
+          isRightMouseButtonDown = true;
+
+      if (e.type == SDL_MOUSEBUTTONUP)
+        if (e.button.button == SDL_BUTTON_LEFT)
+          isLeftMouseButtonDown = false;
+        else if (e.button.button == SDL_BUTTON_RIGHT)
+          isRightMouseButtonDown = false;
+    }
+
+    if (isLeftMouseButtonDown)    // add wall at where the mouse currently points
+    {
         int x, y;
         Vector2D pos;
 
@@ -62,24 +77,21 @@ int main(int argc, char const* argv[]) {
 
         MainGrid.GetMouseGrid(pos, x, y);
         MainGrid.SetWallCase(pos);
-      }
-
-      else if (e.type == SDL_MOUSEBUTTONUP)
-      {
-        isMouseDown = false;
-      }
-
     }
 
-    if (isMouseDown)
+    if (isRightMouseButtonDown)   // remove wall at where the mouse currently points
     {
+      int x, y;
+      Vector2D pos;
 
+      SDL_GetMouseState(&y, &x);
+
+      MainGrid.GetMouseGrid(pos, x, y);
+      MainGrid.ClearCase(pos);
     }
 
     MainRenderer.Clear(0x00, 0x00, 0x00);
     MainGrid.RenderGrid();
-
-
 
     MainRenderer.UpdateScreen();
   }

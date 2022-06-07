@@ -11,7 +11,7 @@ Renderer::Renderer(int window_width, int window_height) : _window_width{window_w
                             );
   assert(_window != NULL);
 
-  _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+  _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED || SDL_RENDERER_PRESENTVSYNC);
   assert(_renderer != NULL);
 }
 

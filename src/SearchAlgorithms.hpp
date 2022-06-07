@@ -8,6 +8,7 @@
 #include <stack>
 #include <queue>
 
+// SA stands for: Search Algorithms
 namespace SA {
 
   void Draw_path(Grid& grid, GridCaseNode* node);
@@ -21,8 +22,9 @@ namespace SA {
 
 
   void DFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack);
-  bool DFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack);
   void DFS_iterative_elementary_init(Grid& grid, GeneralTree& tree,  std::stack< GridCaseNode* >& DFS_stack);
+  bool DFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::stack< GridCaseNode* >& DFS_stack);
+
 
 
   void HC_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue);

@@ -63,6 +63,8 @@ public:
   void SetWallCase(int x, int y);
   void SetWallCase(Vector2D pPosition);
 
+  void ClearCase(int x, int y);
+  void ClearCase(Vector2D pPosition);
   void RandomizeGrid(float frequency, int seed);                // generate grid walls randomlly
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
