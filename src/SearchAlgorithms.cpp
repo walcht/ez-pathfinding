@@ -16,43 +16,48 @@ bool SA::DFS::iterative_verify() const
 void SA::DFS::iterative_elementary()
 {
   currentNode = DFS_stack.top();
-
   DFS_stack.pop();
-  mainGrid(currentNode->position).isDeveloped = true;
 
-  if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y + 1)
-        && !mainGrid(currentNode->position.x, currentNode->position.y + 1).isDeveloped  )
+  if (!mainGrid(currentNode->position).isDeveloped)
   {
-    currentNode->case_right_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y + 1, currentNode);
-    DFS_stack.push(currentNode->case_right_node);
-  }
+    mainGrid(currentNode->position).isDeveloped = true;
 
-  if (  mainGrid.IsCaseAccessible(currentNode->position.x + 1, currentNode->position.y)
-        && !mainGrid(currentNode->position.x + 1, currentNode->position.y).isDeveloped  )
-  {
-    currentNode->case_down_node = tree.CreateNewNode(currentNode->position.x + 1, currentNode->position.y, currentNode);
-    DFS_stack.push(currentNode->case_down_node);
-  }
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y + 1) )
+          //&& !mainGrid(currentNode->position.x, currentNode->position.y + 1).isDeveloped
+    {
+      currentNode->case_right_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y + 1, currentNode);
+      DFS_stack.push(currentNode->case_right_node);
+    }
 
-  if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y - 1)
-      && !mainGrid(currentNode->position.x, currentNode->position.y - 1).isDeveloped  )
-  {
-    currentNode->case_left_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y - 1, currentNode);
-    DFS_stack.push(currentNode->case_left_node);
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x + 1, currentNode->position.y) )
+          //&& !mainGrid(currentNode->position.x + 1, currentNode->position.y).isDeveloped
+    {
+      currentNode->case_down_node = tree.CreateNewNode(currentNode->position.x + 1, currentNode->position.y, currentNode);
+      DFS_stack.push(currentNode->case_down_node);
+    }
+
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y - 1) )
+          //&& !mainGrid(currentNode->position.x, currentNode->position.y - 1).isDeveloped
+    {
+      currentNode->case_left_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y - 1, currentNode);
+      DFS_stack.push(currentNode->case_left_node);
+    }
+  
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x - 1, currentNode->position.y) )
+          //&& !mainGrid(currentNode->position.x - 1, currentNode->position.y).isDeveloped
+    {
+      currentNode->case_up_node = tree.CreateNewNode(currentNode->position.x - 1, currentNode->position.y, currentNode);
+      DFS_stack.push(currentNode->case_up_node);
+    }
   }
   
-  if (  mainGrid.IsCaseAccessible(currentNode->position.x - 1, currentNode->position.y)
-      && !mainGrid(currentNode->position.x - 1, currentNode->position.y).isDeveloped  )
-  {
-    currentNode->case_up_node = tree.CreateNewNode(currentNode->position.x - 1, currentNode->position.y, currentNode);
-    DFS_stack.push(currentNode->case_up_node);
-  }
 }
 
 
 SA::BFS::BFS(Grid& _grid) : SearchAlgorithmBase(_grid)
 {
     BFS_queue.push(tree.CreateNewNode(mainGrid.GetStartCase().position, NULL));
+    mainGrid(BFS_queue.front()->position).isDeveloped = true; // label starting GridCase as explores
 }
 
 bool SA::BFS::iterative_verify() const
@@ -64,15 +69,14 @@ bool SA::BFS::iterative_verify() const
 
 void SA::BFS::iterative_elementary()
 {
-    GridCaseNode* currentNode = BFS_queue.front();
+    currentNode = BFS_queue.front();
     BFS_queue.pop();
-
-    mainGrid(currentNode->position).isDeveloped = true;
 
     if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y + 1)
         && !mainGrid(currentNode->position.x, currentNode->position.y + 1).isDeveloped  )
     {
         currentNode->case_right_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y + 1, currentNode);
+        mainGrid(currentNode->position.x, currentNode->position.y + 1).isDeveloped = true;
         BFS_queue.push(currentNode->case_right_node);
     }
 
@@ -80,6 +84,7 @@ void SA::BFS::iterative_elementary()
         && !mainGrid(currentNode->position.x + 1, currentNode->position.y).isDeveloped  )
     {
         currentNode->case_down_node = tree.CreateNewNode(currentNode->position.x + 1, currentNode->position.y, currentNode);
+        mainGrid(currentNode->position.x + 1, currentNode->position.y).isDeveloped = true;
         BFS_queue.push(currentNode->case_down_node);
     }
 
@@ -87,6 +92,7 @@ void SA::BFS::iterative_elementary()
         && !mainGrid(currentNode->position.x, currentNode->position.y - 1).isDeveloped  )
     {
         currentNode->case_left_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y - 1, currentNode);
+        mainGrid(currentNode->position.x, currentNode->position.y - 1).isDeveloped = true;
         BFS_queue.push(currentNode->case_left_node);
     }
 
@@ -94,6 +100,7 @@ void SA::BFS::iterative_elementary()
         && !mainGrid(currentNode->position.x - 1, currentNode->position.y).isDeveloped  )
     {
         currentNode->case_up_node = tree.CreateNewNode(currentNode->position.x - 1, currentNode->position.y, currentNode);
+        mainGrid(currentNode->position.x - 1, currentNode->position.y).isDeveloped = true;
         BFS_queue.push(currentNode->case_up_node);
     }
 }
