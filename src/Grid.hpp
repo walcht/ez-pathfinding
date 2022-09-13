@@ -6,6 +6,7 @@
 
 #include "Common.hpp"
 #include "Renderer.hpp"
+#include "Tree.hpp"
 
 struct GridCase {
   Vector2D  position;                           // position in the grid
@@ -80,6 +81,8 @@ public:
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   void DrawStartCase();
   void DrawEndCase();
+
+  void DrawPath(GridCaseNode* _lastChildNode);
 
   void RenderGrid();
   void RenderGridCase(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 0xFF);

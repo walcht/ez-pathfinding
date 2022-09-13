@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "Grid.hpp"
+#include "Tree.hpp"
 
 GridCase::GridCase(Vector2D& pPosition, bool pWall) : position{pPosition}, isWall{pWall} {}
 GridCase::GridCase(int x, int y, bool pWall) : isWall{pWall}
@@ -139,6 +140,16 @@ void Grid::DrawEndCase()
 {
   RenderGridCase(_endCase.position.x, _endCase.position.y, 255, 0, 0, 0xFF);
 }
+
+void Grid::DrawPath(GridCaseNode* _lastChildNode)
+{
+  while(_lastChildNode != NULL)
+  {
+    RenderGridCase(_lastChildNode->position.x, _lastChildNode->position.y, 0, 0xFF, 0, 0xFF);
+    _lastChildNode = _lastChildNode->came_from;
+  }
+}
+
 
 bool Grid::IsCaseAccessible(Vector2D pPosition) const
 {

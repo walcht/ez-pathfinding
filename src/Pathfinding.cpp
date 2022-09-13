@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Renderer.hpp"
 #include "Grid.hpp"
 #include "SearchAlgorithms.hpp"
@@ -111,27 +113,18 @@ int main(int argc, char const* argv[]) {
     // draw everything here
     MainGrid.RenderGrid();
 
-    /*
-    if (SA::DFS_iterative_elementary_verify(MainGrid, tree, DFS_stack))
-    {
-      SA::DFS_iterative_elementary(MainGrid, tree, DFS_stack);
-      SA::Draw_path(MainGrid, DFS_stack.top());
-    }
-    */
-
     if (DFS_algorithm.iterative_verify())
     {
       DFS_algorithm.iterative_elementary();
-      SA::Draw_path(MainGrid, &DFS_algorithm.CurrentNode());
+      MainGrid.DrawPath(DFS_algorithm.CurrentNode());
     }
-
 
     // draw start\end cases
     MainGrid.DrawStartCase();
     MainGrid.DrawEndCase();
 
     MainRenderer.UpdateScreen();
-    //SDL_Delay(20);
+    SDL_Delay(10);
   }
 
   return 0;

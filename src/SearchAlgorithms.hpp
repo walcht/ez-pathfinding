@@ -24,44 +24,22 @@ namespace SA {
       void iterative_elementary();
   };
 
-  void Draw_path(Grid& grid, GridCaseNode* node);
-  //
+  class BFS : public SearchAlgorithmBase
+  {
+    private:
+      std::queue<GridCaseNode*> BFS_queue;
+    
+    public:
+      BFS(Grid& _grid);
+
+      bool iterative_verify() const;
+      void iterative_elementary();
+  };
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // DEPTH FIRST SEARCH ALGORITHMS: DFS, DLS, HILL CLIMBING
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  void HC_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue);
-  bool HC_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue);
-  void HC_iterative_elementary(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue, int (*heuristic)(Vector2D&));
-
-  //void DLS_iterative(const Grid& grid, int depth_limit);
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // BREADTH-FIRST SEARCH ALGORITHMS: BFS
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  void BFS_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
-  bool BFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
-  void BFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue);
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // A* ALGORITHMS
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 } /* SA */
-
-
-
-
-
-void SA::Draw_path(Grid& grid, GridCaseNode* node)
-{
-  while(node != NULL)
-  {
-    grid.RenderGridCase(node->position.x, node->position.y, 0, 0, 0xFF, 0xFF);
-    node = node->came_from;
-  }
-}
 
 // Depth Limited Search
 //void DLS_iterative(const Grid& grid, int depth_limit)
@@ -96,55 +74,6 @@ void SA::Draw_path(Grid& grid, GridCaseNode* node)
 //    }
 //  }
 //}
-
-void SA::BFS_iterative_elementary_init(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
-{
-  BFS_queue.push(tree.CreateNewNode(grid.GetStartCase().position, NULL));
-}
-
-bool SA::BFS_iterative_elementary_verify(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
-{
-  if (BFS_queue.empty()) return false;
-  if (BFS_queue.front()->position == grid.GetEndCase().position) return false;
-  return true;
-}
-
-void SA::BFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::queue< GridCaseNode* >& BFS_queue)
-{
-  GridCaseNode* current_node = BFS_queue.front();
-  BFS_queue.pop();
-
-  grid(current_node->position).isDeveloped = true;
-
-  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y + 1)
-        && !grid(current_node->position.x, current_node->position.y + 1).isDeveloped  )
-  {
-    current_node->case_right_node = tree.CreateNewNode(current_node->position.x, current_node->position.y + 1, current_node);
-    BFS_queue.push(current_node->case_right_node);
-  }
-
-  if (  grid.IsCaseAccessible(current_node->position.x + 1, current_node->position.y)
-        && !grid(current_node->position.x + 1, current_node->position.y).isDeveloped  )
-  {
-    current_node->case_down_node = tree.CreateNewNode(current_node->position.x + 1, current_node->position.y, current_node);
-    BFS_queue.push(current_node->case_down_node);
-  }
-
-  if (  grid.IsCaseAccessible(current_node->position.x, current_node->position.y - 1)
-        && !grid(current_node->position.x, current_node->position.y - 1).isDeveloped  )
-  {
-    current_node->case_left_node = tree.CreateNewNode(current_node->position.x, current_node->position.y - 1, current_node);
-    BFS_queue.push(current_node->case_left_node);
-  }
-
-  if (  grid.IsCaseAccessible(current_node->position.x - 1, current_node->position.y)
-        && !grid(current_node->position.x - 1, current_node->position.y).isDeveloped  )
-  {
-    current_node->case_up_node = tree.CreateNewNode(current_node->position.x - 1, current_node->position.y, current_node);
-    BFS_queue.push(current_node->case_up_node);
-  }
-
-}
 
 
 //void SA::HC_iterative_elementary(Grid& grid, GeneralTree& tree, std::priority_queue< GridCaseNode* >& HC_queue, int (*heuristic)(Vector2D&))
@@ -218,8 +147,5 @@ void SA::BFS_iterative_elementary(Grid& grid, GeneralTree& tree, std::queue< Gri
 //  }
 //
 //}
-
-
-
 
 #endif

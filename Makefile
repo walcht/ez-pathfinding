@@ -18,7 +18,7 @@ BIN_DIR := bin
 LIB_DIR := libs
 
 #This is the target that compiles our excecutable
-pathfinder : $(BIN_DIR)/Pathfinding.o $(BIN_DIR)/Renderer.o $(BIN_DIR)/Grid.o $(BIN_DIR)/Tree.o
+pathfinder : $(BIN_DIR)/Pathfinding.o $(BIN_DIR)/Renderer.o $(BIN_DIR)/Grid.o $(BIN_DIR)/Tree.o $(BIN_DIR)/SearchAlgorithms.o
 	$(CC) -o $@ $^ $(LINKER_FLAGS)
 
 $(BIN_DIR)/Pathfinding.o : $(SRC_DIR)/Pathfinding.cpp $(SRC_DIR)/Renderer.hpp $(SRC_DIR)/Grid.hpp
@@ -27,10 +27,13 @@ $(BIN_DIR)/Pathfinding.o : $(SRC_DIR)/Pathfinding.cpp $(SRC_DIR)/Renderer.hpp $(
 $(BIN_DIR)/Renderer.o : $(SRC_DIR)/Renderer.cpp $(SRC_DIR)/Renderer.hpp
 	$(CC) -c $(CXXFLAGS) $< -o $@
 
-$(BIN_DIR)/Grid.o : $(SRC_DIR)/Grid.cpp $(SRC_DIR)/Grid.hpp $(SRC_DIR)/Renderer.hpp
+$(BIN_DIR)/Grid.o : $(SRC_DIR)/Grid.cpp $(SRC_DIR)/Grid.hpp $(SRC_DIR)/Renderer.hpp $(SRC_DIR)/Tree.hpp
 	$(CC) -c $(CXXFLAGS) $< -o $@
 
 $(BIN_DIR)/Tree.o : $(SRC_DIR)/Tree.cpp $(SRC_DIR)/Tree.hpp $(LIB_DIR)/Common.hpp
+	$(CC) -c $(CXXFLAGS) $< -o $@
+
+$(BIN_DIR)/SearchAlgorithms.o : $(SRC_DIR)/SearchAlgorithms.cpp $(SRC_DIR)/SearchAlgorithms.hpp $(SRC_DIR)/SearchAlgorithmBase.hpp
 	$(CC) -c $(CXXFLAGS) $< -o $@
 
 .PHONY = clean

@@ -10,10 +10,10 @@ class SearchAlgorithmBase
   protected:
     Grid& mainGrid;
     GeneralTree tree;
-    GridCaseNode& currentNode;
+    GridCaseNode* currentNode;
 
   public:
-    SearchAlgorithmBase(Grid& _mainGrid);
+    SearchAlgorithmBase(Grid& _mainGrid) : mainGrid{_mainGrid} {}
 
     virtual void iterative_elementary() = 0;
     virtual bool iterative_verify() const = 0;
@@ -23,7 +23,7 @@ class SearchAlgorithmBase
         iterative_elementary();
     }
 
-    GridCaseNode& CurrentNode() {return currentNode;}
+    GridCaseNode* CurrentNode() {return currentNode;}
 };
 
 #endif
