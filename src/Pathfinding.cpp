@@ -16,7 +16,6 @@ int main(int argc, char const* argv[]) {
   bool quit = false;                              // for knowing when to quit application
   SDL_Event e;                                    // for catching SDL events
 
-
   MainGrid.SetStartCase(GridCase(0, 0, false));
   MainGrid.SetEndCase(GridCase(39, 39, false));
 
@@ -27,9 +26,11 @@ int main(int argc, char const* argv[]) {
   */
 
 
-  std::queue< GridCaseNode* > BFS_queue;
-  GeneralTree tree = GeneralTree();
-  SA::BFS_iterative_elementary_init(MainGrid, tree, BFS_queue);
+  //std::queue< GridCaseNode* > BFS_queue;
+  //GeneralTree tree = GeneralTree();
+  //SA::BFS_iterative_elementary_init(MainGrid, tree, BFS_queue);
+
+  SA::DFS DFS_algorithm(MainGrid);
 
   bool endCustomizationLoop = false;
   bool isLeftMouseButtonDown = false;
@@ -118,10 +119,10 @@ int main(int argc, char const* argv[]) {
     }
     */
 
-    if (SA::BFS_iterative_elementary_verify(MainGrid, tree, BFS_queue))
+    if (DFS_algorithm.iterative_verify())
     {
-      SA::BFS_iterative_elementary(MainGrid, tree, BFS_queue);
-      SA::Draw_path(MainGrid, BFS_queue.front());
+      DFS_algorithm.iterative_elementary();
+      SA::Draw_path(MainGrid, &DFS_algorithm.CurrentNode());
     }
 
 

@@ -4,8 +4,6 @@
  *  code files.
  *
  */
-
-
 #ifndef COMMON_H
 #define COMMON_H
 
@@ -23,6 +21,4 @@ struct Vector2D
     return true;
   }
 };
-
-
 #endif

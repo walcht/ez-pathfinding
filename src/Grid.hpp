@@ -73,6 +73,7 @@ public:
   GridCase& operator() (int x, int y);
   const GridCase& operator() (int x, int y) const;
   GridCase& operator() (Vector2D& pos);
+  const GridCase& operator() (Vector2D& pos) const;
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // DRAWERS

@@ -65,6 +65,12 @@ GridCase& Grid::operator() (Vector2D& pos)
   return _grid[pos.x][pos.y];
 }
 
+const GridCase& Grid::operator() (Vector2D& pos) const {
+  assert(((pos.x < _width) && (pos.y < _height)));
+  return _grid[pos.x][pos.y];
+}
+
+
 
 const GridCase& Grid::operator() (int x, int y) const {
   assert(((x < _width) && (y < _height)));
