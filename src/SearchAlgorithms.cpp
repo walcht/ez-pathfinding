@@ -104,3 +104,54 @@ void SA::BFS::iterative_elementary()
         BFS_queue.push(currentNode->case_up_node);
     }
 }
+
+SA::DLS::DLS(Grid& _grid, int _maxDepth) : maxDepth{_maxDepth}, SearchAlgorithmBase(_grid)
+{
+  DLS_stack.push(tree.CreateNewNode(mainGrid.GetStartCase().position, NULL));
+}
+
+bool SA::DLS::iterative_verify() const
+{
+  if (DLS_stack.empty()) return false;    // no more nodes to develop
+  if (currentNode->position == mainGrid.GetEndCase().position) return false;  // destination is reached
+  return true;
+}
+
+void SA::DLS::iterative_elementary()
+{
+  currentNode = DLS_stack.top();
+  DLS_stack.pop();
+
+  if (!mainGrid(currentNode->position).isDeveloped && (currentNode->depth <= maxDepth))
+  {
+    mainGrid(currentNode->position).isDeveloped = true;
+
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y + 1) )
+          //&& !mainGrid(currentNode->position.x, currentNode->position.y + 1).isDeveloped
+    {
+      currentNode->case_right_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y + 1, currentNode);
+      DLS_stack.push(currentNode->case_right_node);
+    }
+
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x + 1, currentNode->position.y) )
+          //&& !mainGrid(currentNode->position.x + 1, currentNode->position.y).isDeveloped
+    {
+      currentNode->case_down_node = tree.CreateNewNode(currentNode->position.x + 1, currentNode->position.y, currentNode);
+      DLS_stack.push(currentNode->case_down_node);
+    }
+
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x, currentNode->position.y - 1) )
+          //&& !mainGrid(currentNode->position.x, currentNode->position.y - 1).isDeveloped
+    {
+      currentNode->case_left_node = tree.CreateNewNode(currentNode->position.x, currentNode->position.y - 1, currentNode);
+      DLS_stack.push(currentNode->case_left_node);
+    }
+  
+    if (  mainGrid.IsCaseAccessible(currentNode->position.x - 1, currentNode->position.y) )
+          //&& !mainGrid(currentNode->position.x - 1, currentNode->position.y).isDeveloped
+    {
+      currentNode->case_up_node = tree.CreateNewNode(currentNode->position.x - 1, currentNode->position.y, currentNode);
+      DLS_stack.push(currentNode->case_up_node);
+    }
+  }
+}

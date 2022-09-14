@@ -21,8 +21,8 @@ int main(int argc, char const* argv[]) {
   MainGrid.SetStartCase(GridCase(0, 0, false));
   MainGrid.SetEndCase(GridCase(39, 39, false));
 
-  SA::DFS DFS_algorithm(MainGrid);
-  //SA::BFS BFS_algorithm(MainGrid);
+  //SA::DLS search_algorithm(MainGrid, 60);
+  SA::BFS search_algorithm(MainGrid);
 
   bool endCustomizationLoop = false;
   bool isLeftMouseButtonDown = false;
@@ -103,10 +103,10 @@ int main(int argc, char const* argv[]) {
     // draw everything here
     MainGrid.RenderGrid();
 
-    if (DFS_algorithm.iterative_verify()) 
-      DFS_algorithm.iterative_elementary();
+    if (search_algorithm.iterative_verify()) 
+      search_algorithm.iterative_elementary();
 
-    MainGrid.DrawPath(DFS_algorithm.CurrentNode());
+    MainGrid.DrawPath(search_algorithm.CurrentNode());
 
     // draw start\end cases
     MainGrid.DrawStartCase();

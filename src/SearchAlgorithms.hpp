@@ -36,6 +36,19 @@ namespace SA {
       void iterative_elementary();
   };
 
+  class DLS : public SearchAlgorithmBase
+  {
+    private:
+      std::stack< GridCaseNode* > DLS_stack;
+      int maxDepth;
+
+    public:
+      DLS(Grid& _grid, int _maxDepth = 20);
+
+      bool iterative_verify() const;
+      void iterative_elementary();
+  };
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // DEPTH FIRST SEARCH ALGORITHMS: DFS, DLS, HILL CLIMBING
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

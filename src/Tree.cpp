@@ -26,6 +26,7 @@ GridCaseNode* GeneralTree::CreateNewNode(Vector2D pPosition, GridCaseNode* cameF
 
   new_node->came_from = cameFrom;
   new_node->position = pPosition;
+  new_node->depth = new_node->came_from->depth + 1;
 
   return new_node;
 }
@@ -44,6 +45,8 @@ GridCaseNode* GeneralTree::CreateNewNode(int x, int y, GridCaseNode* cameFrom)
 
   new_node->came_from = cameFrom;
   new_node->position = Vector2D(x, y);
+  new_node->depth = new_node->came_from->depth + 1;
+
 
   return new_node;
 }
